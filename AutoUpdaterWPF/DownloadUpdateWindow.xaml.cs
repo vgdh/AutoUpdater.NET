@@ -48,6 +48,37 @@ namespace AutoUpdaterWPFedition
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             progressBar.Value = e.ProgressPercentage;
+
+            progressBarText.Text = ProgressBarText(e.BytesReceived, e.TotalBytesToReceive);
+
+        }
+
+        private string ProgressBarText(long bytesReceivedX, long totalBytesToReceiveX)
+        {
+            return NewMethod(bytesReceivedX) + " / " + NewMethod2(totalBytesToReceiveX);
+        }
+
+        private static string NewMethod(double BytesReceived)
+        {
+            double BytesReceived = bytesReceivedX;
+            if (BytesReceived < 1024)
+            {
+                return string.Format("{0} Байт", BytesReceived.ToString("F2"));
+            }
+            if (BytesReceived < 1048576)
+            {
+                return string.Format("{0} Kб (BytesReceived / 1024).ToString("F2"));
+            }
+            if (BytesReceived < 1073741824)
+            {
+                return string.Format("{0} Мб", (BytesReceived / 1048576).ToString("F2"));
+            }
+            return (BytesReceived / 1073741824).ToString() + " Гб";
+        }
+
+        private string NewMethod2(long totalBytesToReceiveX)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnDownloadComplete(object sender, AsyncCompletedEventArgs e)
