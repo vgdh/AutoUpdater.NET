@@ -55,30 +55,25 @@ namespace AutoUpdaterWPFedition
 
         private string ProgressBarText(long bytesReceivedX, long totalBytesToReceiveX)
         {
-            return ReceivedBytesToString(bytesReceivedX) + " / " + TotalBytesToString(totalBytesToReceiveX);
+            return BytesToString(bytesReceivedX) + " / " + BytesToString(totalBytesToReceiveX);
         }
 
-        private static string ReceivedBytesToString(double bytesReceivedX)
+        private static string BytesToString(double bytesX)
         {
-            if (bytesReceivedX < 1024)
+            if (bytesX < 1024)
             {
-                return string.Format("{0} Байт", bytesReceivedX.ToString("F0"));
+                return $"{bytesX:F0} Байт";
             }
-            if (bytesReceivedX < 1048576)
+            if (bytesX < 1048576)
             {
-                return string.Format("{0} Kб", (bytesReceivedX / 1024).ToString("F2"));
+                return $"{(bytesX/1024):F2} Kб";
             }
-            if (bytesReceivedX < 1073741824)
+            if (bytesX < 1073741824)
             {
-                return string.Format("{0} Мб", (bytesReceivedX / 1048576).ToString("F2"));
+                return $"{(bytesX/1048576):F2} Мб";
             }
 
-            return string.Format("{0} Гб", (bytesReceivedX / 1073741824).ToString("F2"));
-        }
-
-        private string TotalBytesToString(long totalBytesToReceiveX)
-        {
-            throw new NotImplementedException();
+            return $"{(bytesX/1073741824):F2} Гб";
         }
 
         private void OnDownloadComplete(object sender, AsyncCompletedEventArgs e)
@@ -89,6 +84,7 @@ namespace AutoUpdaterWPFedition
                 Process.Start(processStartInfo);
 
                 var currentProcess = Process.GetCurrentProcess();
+
                 foreach (var process in Process.GetProcessesByName(currentProcess.ProcessName))
                 {
                     if (process.Id != currentProcess.Id)

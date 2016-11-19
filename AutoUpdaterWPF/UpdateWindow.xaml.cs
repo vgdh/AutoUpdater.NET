@@ -29,6 +29,9 @@ namespace AutoUpdaterWPFedition
         public UpdateWindow()
         {
             InitializeComponent();
+            VersionInstalled.Text = AutoUpdater.InstalledVersion.ToString();
+            VersionAvailable.Text = AutoUpdater.CurrentVersion.ToString();
+
             WebBrowser.Navigate(AutoUpdater.ChangeLogURL);
             List<DayReminder> days = new List<DayReminder>()
             {
@@ -40,6 +43,11 @@ namespace AutoUpdaterWPFedition
             RemindLaterDays.ItemsSource = days;
             RemindLaterDays.DisplayMemberPath = "Name";
             RemindLaterDays.SelectedIndex = 0;
+
+            if (AutoUpdater.CurrentVersion <= AutoUpdater.InstalledVersion)
+            {
+                UpdateButton.IsEnabled = false;
+            }
         }
 
         private void Skip_Button_Click(object sender, RoutedEventArgs e)

@@ -26,7 +26,7 @@
                 <TextBlock Text="Доступна новая версия!" HorizontalAlignment="Center" FontSize="25" FontWeight="Bold"></TextBlock>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Left" Margin="5,0">Установленная версия:</TextBlock>
-                    <TextBlock Name="InstalledAvailable" DockPanel.Dock="Left">0.0.0.0</TextBlock>
+                    <TextBlock Name="VersionInstalled" DockPanel.Dock="Left">0.0.0.0</TextBlock>
                 </DockPanel>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Left" Margin="5,0">Доступная версия:</TextBlock>
@@ -35,7 +35,7 @@
             </StackPanel>
         </Grid>
         <WebBrowser Grid.Row="1" Margin="2" Name="WebBrowser"/>
-        <Button Grid.Row="2" Margin="2" Click="DownloadUpdate_Button_Click" Content="Обновить" FontSize="30" FontWeight="Bold" Background="Lime"/>
+        <Button Name="UpdateButton" Grid.Row="2" Margin="2" Click="DownloadUpdate_Button_Click" Content="Обновить" FontSize="30" FontWeight="Bold" Background="Lime"/>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

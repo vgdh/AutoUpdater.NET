@@ -26,7 +26,7 @@ namespace AutoUpdaterWPF_Test
         public MainWindow()
         {
             InitializeComponent();
-            AutoUpdater.Initialize("https://dl.dropboxusercontent.com/u/23825089/Update.xml", 1, UpdateType.CheckOnly);
+            AutoUpdater.Initialize("https://dl.dropboxusercontent.com/u/23825089/Update.xml", 30, UpdateType.CheckOnly);
             AutoUpdater.UpdateCheckEvent += AutoUpdaterOnUpdateAvailableNotify;
         }
 
