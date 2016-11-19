@@ -45,10 +45,6 @@ namespace AutoUpdaterWPF_Test
             }));
         }
 
-        private void UpdateEvent()
-        {
-            AutoUpdater.CheckUpdate();
-        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //AutoUpdater.CheckUpdate(UpdateType.UpdateWindow);
