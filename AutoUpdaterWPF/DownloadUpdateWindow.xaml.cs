@@ -55,28 +55,28 @@ namespace AutoUpdaterWPFedition
 
         private string ProgressBarText(long bytesReceivedX, long totalBytesToReceiveX)
         {
-            return NewMethod(bytesReceivedX) + " / " + NewMethod2(totalBytesToReceiveX);
+            return ReceivedBytesToString(bytesReceivedX) + " / " + TotalBytesToString(totalBytesToReceiveX);
         }
 
-        private static string NewMethod(double BytesReceived)
+        private static string ReceivedBytesToString(double bytesReceivedX)
         {
-            double BytesReceived = bytesReceivedX;
-            if (BytesReceived < 1024)
+            if (bytesReceivedX < 1024)
             {
-                return string.Format("{0} Байт", BytesReceived.ToString("F2"));
+                return string.Format("{0} Байт", bytesReceivedX.ToString("F0"));
             }
-            if (BytesReceived < 1048576)
+            if (bytesReceivedX < 1048576)
             {
-                return string.Format("{0} Kб (BytesReceived / 1024).ToString("F2"));
+                return string.Format("{0} Kб", (bytesReceivedX / 1024).ToString("F2"));
             }
-            if (BytesReceived < 1073741824)
+            if (bytesReceivedX < 1073741824)
             {
-                return string.Format("{0} Мб", (BytesReceived / 1048576).ToString("F2"));
+                return string.Format("{0} Мб", (bytesReceivedX / 1048576).ToString("F2"));
             }
-            return (BytesReceived / 1073741824).ToString() + " Гб";
+
+            return string.Format("{0} Гб", (bytesReceivedX / 1073741824).ToString("F2"));
         }
 
-        private string NewMethod2(long totalBytesToReceiveX)
+        private string TotalBytesToString(long totalBytesToReceiveX)
         {
             throw new NotImplementedException();
         }
