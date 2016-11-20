@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Reflection;
 using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 using System.Xml;
 
 namespace AutoUpdaterWPFedition
@@ -38,7 +41,7 @@ namespace AutoUpdaterWPFedition
         /// <summary>
         /// При использоывании заменяет внутренние механизмы поведения при обнаружении обновления на пользовательские.
         /// </summary>
-        public static event UpdateActionOverrideEventHandler UpdateActionOverrideEvent ;
+        public static event UpdateActionOverrideEventHandler UpdateActionOverrideEvent;
 
         /// <summary>
         /// Инициализация атоапдейтера
@@ -74,7 +77,7 @@ namespace AutoUpdaterWPFedition
         /// <param name="e"></param>
         private static void BackgroundWorkerDoWork(object sender, DoWorkEventArgs e)
         {
-           
+
 
             UpdateType updateType = (UpdateType)e.Argument;
             Assembly mainAssembly = Assembly.GetEntryAssembly();
@@ -110,33 +113,22 @@ namespace AutoUpdaterWPFedition
 
             if (xmlNodeList != null)
             {
-                foreach (XmlNode item in xmlNodeList)
+                XmlNode xmlNodeVersion = xmlNodeList[0].SelectSingleNode("version");
+                if (xmlNodeVersion != null) CurrentVersion = new Version(xmlNodeVersion.InnerText);
+
+                XmlNode xmlNodeChangeLog = xmlNodeList[0].SelectSingleNode("changelog");
+                ChangeLogURL = GetURL(webResponse.ResponseUri, xmlNodeChangeLog);
+
+                XmlNode xmlNodeUrl = xmlNodeList[0].SelectSingleNode("URLx86");
+                DownloadURL = GetURL(webResponse.ResponseUri, xmlNodeUrl);
+
+                if (IntPtr.Size.Equals(8))
                 {
-                    XmlNode xmlNodeVersion = item.SelectSingleNode("version");
-                    if (xmlNodeVersion != null)
+                    XmlNode appCastUrl64 = xmlNodeList[0].SelectSingleNode("URLx64");
+                    var downloadURL64 = GetURL(webResponse.ResponseUri, appCastUrl64);
+                    if (!string.IsNullOrEmpty(downloadURL64))
                     {
-                        string appVersion = xmlNodeVersion.InnerText;
-                        CurrentVersion = new Version(appVersion);
-                        if (CurrentVersion == null) return;
-                    }
-                    else continue;
-
-                    XmlNode xmlNodeChangeLog = item.SelectSingleNode("changelog");
-                    ChangeLogURL = GetURL(webResponse.ResponseUri, xmlNodeChangeLog);
-
-                    XmlNode xmlNodeUrl = item.SelectSingleNode("url");
-                    DownloadURL = GetURL(webResponse.ResponseUri, xmlNodeUrl);
-
-                    if (IntPtr.Size.Equals(8))
-                    {
-                        XmlNode appCastUrl64 = item.SelectSingleNode("url64");
-
-                        var downloadURL64 = GetURL(webResponse.ResponseUri, appCastUrl64);
-
-                        if (!string.IsNullOrEmpty(downloadURL64))
-                        {
-                            DownloadURL = downloadURL64;
-                        }
+                        DownloadURL = downloadURL64;
                     }
                 }
             }
@@ -150,30 +142,22 @@ namespace AutoUpdaterWPFedition
                 IsUpdateAvailable = false,
             };
 
-
-            // Показывает прошло ли время с момента нажатия кнопки "Напомнить позже"
-            bool IsRemindLaterPassed = DateTime.Compare(DateTime.Now, Settings.RemindLater) > 0 ? true : false; 
-
             if (CurrentVersion > InstalledVersion)
             {
                 args.IsUpdateAvailable = true;
 
-                if (UpdateActionOverrideEvent == null &      // Если действие при наличии обновления не переназначено пользователем на свой эвент
-                    updateType == UpdateType.UpdateWindow &  // Если выбран режим проверки с показом встроенно окна обработки обновлений
-                    IsRemindLaterPassed)                     // Если прошло время указанное в напомнить позже
+                // Показывает прошло ли время с момента нажатия кнопки "Напомнить позже"
+                if (DateTime.Compare(DateTime.Now, Settings.RemindLater) > 0 & CurrentVersion.ToString(3) != Settings.SkipVersion.ToString(3))
                 {
-                    var thread = new Thread(ShowUpdateWindow);
-                    thread.SetApartmentState(ApartmentState.STA);
-                    thread.Start();
+                    if (UpdateActionOverrideEvent == null & updateType == UpdateType.UpdateWindow)
+                    {
+                        var thread = new Thread(ShowUpdateWindow);
+                        thread.SetApartmentState(ApartmentState.STA);
+                        thread.Start();
+                    }
+                    UpdateActionOverrideEvent?.Invoke(args);
                 }
             }
-
-            //Запуск эвентов с проверкой на null
-            if (IsRemindLaterPassed) // Эвент перезаписывающий внутренние механизмы поведения апдейтера запускается только если прошло время напонить позже
-            {
-                UpdateActionOverrideEvent?.Invoke(args);
-            }
-
             UpdateCheckEvent?.Invoke(args);
         }
 
@@ -199,11 +183,9 @@ namespace AutoUpdaterWPFedition
         {
             if (XmlUpdateFileURL == null) return; //чтобы не проверять по пустому адресу
             BackgroundWorkerDoWork(null, new DoWorkEventArgs(UpdateType.CheckOnly));
-            if (CurrentVersion > InstalledVersion)
-            {
-                UpdateWindow updateWindow = new UpdateWindow();
-                updateWindow.ShowDialog();
-            }
+
+            UpdateWindow updateWindow = new UpdateWindow();
+            updateWindow.ShowDialog();
 
         }
 

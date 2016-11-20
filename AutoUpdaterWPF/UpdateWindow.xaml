@@ -23,7 +23,7 @@
             </Grid.ColumnDefinitions>
             <Image Grid.Column="0" Margin="5" Source="Resources/download.png"/>
             <StackPanel Grid.Column="1" Margin="5">
-                <TextBlock Text="Доступна новая версия!" HorizontalAlignment="Center" FontSize="25" FontWeight="Bold"></TextBlock>
+                <TextBlock Name="HeaderNewVersion" Text="Доступна новая версия!" HorizontalAlignment="Center" FontSize="25" FontWeight="Bold"></TextBlock>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Left" Margin="5,0">Установленная версия:</TextBlock>
                     <TextBlock Name="VersionInstalled" DockPanel.Dock="Left">0.0.0.0</TextBlock>
@@ -41,9 +41,9 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Margin="2" Click="Skip_Button_Click" Content="Пропустить эту версию (не рекомендуется)" Background="Red"/>
+            <Button Name="SkipVersionButton" Grid.Column="0" Margin="2" Click="Skip_Button_Click" Content="Пропустить эту версию (не рекомендуется)" Background="Red"/>
             <DockPanel Grid.Column="1" Margin="2">
-                <Button DockPanel.Dock="Left"   Click="Later_Button_Click" Content="Напомнить через: " Width="122"/>
+                <Button Name="ReminderLaterButton" DockPanel.Dock="Left"   Click="Later_Button_Click" Content="Напомнить через: " Width="122"/>
                 <ComboBox Name="RemindLaterDays" VerticalContentAlignment="Center" ></ComboBox>
             </DockPanel>
         </Grid>

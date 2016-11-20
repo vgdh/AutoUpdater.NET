@@ -7,21 +7,8 @@ namespace AutoUpdaterWPFedition
     public static class Settings
     {
         private static SettingsFields _fields = new SettingsFields();
-        private static readonly string _xmlName = "UpdateSettings.xml";
+        private const string XmlName = "UpdateSettings.xml";
 
-        public static bool UpdeteIsEnable
-        {
-            get
-            {
-                ReadXml();
-                return _fields.UpdeteIsEnable;
-            }
-            set
-            {
-                _fields.UpdeteIsEnable = value;
-                WriteXml();
-            }
-        }
         public static DateTime RemindLater
         {
             get
@@ -40,7 +27,12 @@ namespace AutoUpdaterWPFedition
             get
             {
                 ReadXml();
-                return new Version(_fields.SkipVersion);
+                Version version;
+                if (!Version.TryParse(_fields.SkipVersion, out version))
+                {
+                    version = new Version(0,0,0,0);
+                }
+                return version;
             }
             set
             {
@@ -52,16 +44,16 @@ namespace AutoUpdaterWPFedition
         private static void WriteXml()
         {
             XmlSerializer ser = new XmlSerializer(typeof(SettingsFields));
-            TextWriter writer = new StreamWriter(_xmlName);
+            TextWriter writer = new StreamWriter(XmlName);
             ser.Serialize(writer, _fields);
             writer.Close();
         }
         private static void ReadXml()
         {
-            if (File.Exists(_xmlName))
+            if (File.Exists(XmlName))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(SettingsFields));
-                TextReader reader = new StreamReader(_xmlName);
+                TextReader reader = new StreamReader(XmlName);
                 _fields = ser.Deserialize(reader) as SettingsFields;
                 reader.Close();
             }
@@ -70,7 +62,7 @@ namespace AutoUpdaterWPFedition
         {
             public bool UpdeteIsEnable = false;
             public DateTime RemindLater = DateTime.MinValue;
-            public string SkipVersion = "0,0,0,0";
+            public string SkipVersion = "0.0.0.0";
         }
     }
 }

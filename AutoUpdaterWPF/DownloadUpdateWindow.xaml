@@ -9,7 +9,7 @@
         Height="150" 
         Width="600" 
         ResizeMode="NoResize"
-        Closing="Window_Closing">
+        Closing="Window_Closing" Activated="Window_Activated">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25*"/>

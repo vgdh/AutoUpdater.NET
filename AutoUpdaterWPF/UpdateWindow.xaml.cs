@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -24,8 +25,6 @@ namespace AutoUpdaterWPFedition
             public int NumberOfDays { get; set; }
             public string Name { get; set; }
         }
-        //TODO сделать чтобы настройки указывались в олном месте
-
         public UpdateWindow()
         {
             InitializeComponent();
@@ -47,6 +46,10 @@ namespace AutoUpdaterWPFedition
             if (AutoUpdater.CurrentVersion <= AutoUpdater.InstalledVersion)
             {
                 UpdateButton.IsEnabled = false;
+                SkipVersionButton.IsEnabled = false;
+                ReminderLaterButton.IsEnabled = false;
+                RemindLaterDays.IsEnabled = false;
+                HeaderNewVersion.Text = "Обновлений нет";
             }
         }
 
@@ -58,7 +61,6 @@ namespace AutoUpdaterWPFedition
 
         private void Later_Button_Click(object sender, RoutedEventArgs e)
         {
-            //TODO сделать чтобы можно было выбирать через сколько дней напомнить
             Settings.RemindLater = DateTime.Now + TimeSpan.FromDays((RemindLaterDays.SelectedItem as DayReminder).NumberOfDays);
             this.Close();
         }

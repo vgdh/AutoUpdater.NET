@@ -26,12 +26,17 @@ namespace AutoUpdaterWPFedition
         private string _tempPath;
         private WebClient _webClient;
         private string _pathToFile;
+        private int _tryCount = 0;
 
         public DownloadUpdateWindow(string downloadURL, string pathToFile)
         {
             InitializeComponent();
             _downloadURL = downloadURL;
             _pathToFile = pathToFile;
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
             DownloadUpdateDialogLoad();
         }
 
@@ -39,10 +44,20 @@ namespace AutoUpdaterWPFedition
         {
             _webClient = new WebClient();
             var uri = new Uri(_downloadURL);
-            _tempPath = System.IO.Path.Combine(_pathToFile, GetFileName(_downloadURL));
-            _webClient.DownloadProgressChanged += OnDownloadProgressChanged;
-            _webClient.DownloadFileCompleted += OnDownloadComplete;
-            _webClient.DownloadFileAsync(uri, _tempPath);
+            string fileName = GetFileName(_downloadURL);
+
+            if (fileName != null) // Если файл недоступен
+            {
+                _tempPath = System.IO.Path.Combine(_pathToFile, fileName);
+                _webClient.DownloadProgressChanged += OnDownloadProgressChanged;
+                _webClient.DownloadFileCompleted += OnDownloadComplete;
+                _webClient.DownloadFileAsync(uri, _tempPath);
+            }
+            else
+            {
+                Close();
+            }
+            
         }
 
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -96,8 +111,14 @@ namespace AutoUpdaterWPFedition
             }
         }
 
-        private static string GetFileName(string url, string httpWebRequestMethod = "HEAD")
+        
+        private string GetFileName(string url, string httpWebRequestMethod = "HEAD")
         {
+            if (_tryCount > 5)
+            {
+                MessageBox.Show("Файл с обновлениями недоступен");
+                return null;
+            }
             try
             {
                 var fileName = string.Empty;
@@ -145,6 +166,7 @@ namespace AutoUpdaterWPFedition
             }
             catch (WebException)
             {
+                _tryCount++;
                 return GetFileName(url, "GET");
             }
         }
@@ -153,5 +175,7 @@ namespace AutoUpdaterWPFedition
         {
             _webClient.CancelAsync();
         }
+
+    
     }
 }
