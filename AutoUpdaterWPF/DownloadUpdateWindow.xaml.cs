@@ -37,6 +37,7 @@ namespace AutoUpdaterWPFedition
 
         private void Window_Activated(object sender, EventArgs e)
         {
+            //TODO убрать отсюда т.к. это срабатывает при каждой активации окна
             DownloadUpdateDialogLoad();
         }
 
@@ -63,7 +64,6 @@ namespace AutoUpdaterWPFedition
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             progressBar.Value = e.ProgressPercentage;
-
             progressBarText.Text = ProgressBarText(e.BytesReceived, e.TotalBytesToReceive);
 
         }

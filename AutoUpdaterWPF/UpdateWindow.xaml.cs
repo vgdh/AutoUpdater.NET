@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,13 +27,36 @@ namespace AutoUpdaterWPFedition
             public int NumberOfDays { get; set; }
             public string Name { get; set; }
         }
+
         public UpdateWindow()
         {
             InitializeComponent();
+
+            //TODO сделать чтобы при отсутствии интернета все не падало
+            if (AutoUpdater.InstalledVersion == null || AutoUpdater.CurrentVersion == null)
+            {
+                MessageBox.Show("Сервер основлений недоступен");
+                return;
+            }
+
             VersionInstalled.Text = AutoUpdater.InstalledVersion.ToString();
             VersionAvailable.Text = AutoUpdater.CurrentVersion.ToString();
 
-            WebBrowser.Navigate(AutoUpdater.ChangeLogURL);
+
+            string strContent = " ";
+            try
+            {
+                var webRequest = WebRequest.Create(AutoUpdater.ChangeLogURL);
+                var response = webRequest.GetResponse();
+                var content = response.GetResponseStream();
+                var reader = new StreamReader(content);
+                strContent = reader.ReadToEnd();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            WebBrowser.NavigateToString(strContent);
             List<DayReminder> days = new List<DayReminder>()
             {
                 new DayReminder() {NumberOfDays=1,Name="Завтра" },
@@ -52,6 +77,9 @@ namespace AutoUpdaterWPFedition
                 HeaderNewVersion.Text = "Обновлений нет";
             }
         }
+
+
+
 
         private void Skip_Button_Click(object sender, RoutedEventArgs e)
         {

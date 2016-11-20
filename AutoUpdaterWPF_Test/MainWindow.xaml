@@ -10,6 +10,6 @@
         Width="300"
         ResizeMode="NoResize">
     <Grid>
-        <Button Name="Button1" Click="Button_Click">CheckUpdate</Button>
+        <Button Name="Button1" Click="Button_Click" Background="Aqua">CheckUpdate</Button>
     </Grid>
 </Window>
