@@ -18,8 +18,8 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="61*"></ColumnDefinition>
-                <ColumnDefinition Width="185*"></ColumnDefinition>
+                <ColumnDefinition Width="147"></ColumnDefinition>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Image Grid.Column="0" Margin="5" Source="Resources/download.png"/>
             <StackPanel Grid.Column="1" Margin="5">
