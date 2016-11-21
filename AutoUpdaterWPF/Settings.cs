@@ -9,6 +9,20 @@ namespace AutoUpdaterWPFedition
         private static SettingsFields _fields = new SettingsFields();
         private const string XmlName = "UpdateSettings.xml";
 
+        public static string Message
+        {
+            get
+            {
+                ReadXml();
+                return _fields.Message;
+            }
+            set
+            {
+                _fields.Message = value;
+                WriteXml();
+            }
+        }
+
         public static DateTime RemindLater
         {
             get
@@ -63,6 +77,7 @@ namespace AutoUpdaterWPFedition
             public bool UpdeteIsEnable = false;
             public DateTime RemindLater = DateTime.MinValue;
             public string SkipVersion = "0.0.0.0";
+            public string Message = null;
         }
     }
 }

@@ -60,7 +60,6 @@ namespace AutoUpdaterWPFedition
         {
             progressBar.Value = e.ProgressPercentage;
             progressBarText.Text = ProgressBarText(e.BytesReceived, e.TotalBytesToReceive);
-
         }
 
         private string ProgressBarText(long bytesReceivedX, long totalBytesToReceiveX)

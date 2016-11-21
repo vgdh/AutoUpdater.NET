@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Cache;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 using System.Xml;
 
 namespace AutoUpdaterWPFedition
@@ -19,6 +20,7 @@ namespace AutoUpdaterWPFedition
     {
         internal static string ChangeLogURL;
         internal static string DownloadURL;
+        internal static string MessageURL;
         internal static Version CurrentVersion;
         internal static Version InstalledVersion;
         /// <summary>
@@ -114,6 +116,10 @@ namespace AutoUpdaterWPFedition
                 XmlNode xmlNodeChangeLog = xmlNodeList[0].SelectSingleNode("changelog");
                 ChangeLogURL = GetURL(webResponse.ResponseUri, xmlNodeChangeLog);
 
+                XmlNode xmlNodeMessage = xmlNodeList[0].SelectSingleNode("message");
+                MessageURL = GetURL(webResponse.ResponseUri, xmlNodeMessage);
+
+
                 XmlNode xmlNodeUrl = xmlNodeList[0].SelectSingleNode("URLx86");
                 DownloadURL = GetURL(webResponse.ResponseUri, xmlNodeUrl);
 
@@ -154,6 +160,19 @@ namespace AutoUpdaterWPFedition
                 }
             }
             UpdateCheckEvent?.Invoke(args);
+
+            if (Settings.Message != MessageURL)
+            {
+                var thread = new Thread(ShowMessageWindow);
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+            }
+        }
+
+        private static void ShowMessageWindow()
+        {
+            BrowserWindow browserWindow = new BrowserWindow(MessageURL);
+            browserWindow.ShowDialog();
         }
 
         private static string GetURL(Uri baseUri, XmlNode xmlNode)
@@ -199,7 +218,7 @@ namespace AutoUpdaterWPFedition
         }
     }
 
-    
+
 
     /// <summary>
     ///     Object of this class gives you all the details about the update useful in handling the update logic yourself.
