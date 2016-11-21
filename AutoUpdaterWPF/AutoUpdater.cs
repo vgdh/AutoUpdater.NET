@@ -77,8 +77,6 @@ namespace AutoUpdaterWPFedition
         /// <param name="e"></param>
         private static void BackgroundWorkerDoWork(object sender, DoWorkEventArgs e)
         {
-
-
             UpdateType updateType = (UpdateType)e.Argument;
             Assembly mainAssembly = Assembly.GetEntryAssembly();
             InstalledVersion = mainAssembly.GetName().Version;
@@ -203,6 +201,8 @@ namespace AutoUpdaterWPFedition
             }
         }
     }
+
+    
 
     /// <summary>
     ///     Object of this class gives you all the details about the update useful in handling the update logic yourself.

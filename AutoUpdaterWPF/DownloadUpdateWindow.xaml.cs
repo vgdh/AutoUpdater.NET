@@ -35,19 +35,13 @@ namespace AutoUpdaterWPFedition
             _pathToFile = pathToFile;
         }
 
-        private void Window_Activated(object sender, EventArgs e)
-        {
-            //TODO убрать отсюда т.к. это срабатывает при каждой активации окна
-            DownloadUpdateDialogLoad();
-        }
-
-        private void DownloadUpdateDialogLoad()
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _webClient = new WebClient();
             var uri = new Uri(_downloadURL);
             string fileName = GetFileName(_downloadURL);
 
-            if (fileName != null) // Если файл недоступен
+            if (fileName != null || fileName == string.Empty) // Если файл недоступен
             {
                 _tempPath = System.IO.Path.Combine(_pathToFile, fileName);
                 _webClient.DownloadProgressChanged += OnDownloadProgressChanged;
@@ -58,8 +52,8 @@ namespace AutoUpdaterWPFedition
             {
                 Close();
             }
-            
         }
+
 
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
@@ -81,14 +75,14 @@ namespace AutoUpdaterWPFedition
             }
             if (bytesX < 1048576)
             {
-                return $"{(bytesX/1024):F2} Kб";
+                return $"{(bytesX / 1024):F2} Kб";
             }
             if (bytesX < 1073741824)
             {
-                return $"{(bytesX/1048576):F2} Мб";
+                return $"{(bytesX / 1048576):F2} Мб";
             }
 
-            return $"{(bytesX/1073741824):F2} Гб";
+            return $"{(bytesX / 1073741824):F2} Гб";
         }
 
         private void OnDownloadComplete(object sender, AsyncCompletedEventArgs e)
@@ -111,12 +105,12 @@ namespace AutoUpdaterWPFedition
             }
         }
 
-        
+
         private string GetFileName(string url, string httpWebRequestMethod = "HEAD")
         {
             if (_tryCount > 5)
             {
-                MessageBox.Show("Файл с обновлениями недоступен");
+                MessageBox.Show("Произошла ошибка при попытке загрузки обновления, файл с обновлением недоступен", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
             try
@@ -176,6 +170,6 @@ namespace AutoUpdaterWPFedition
             _webClient.CancelAsync();
         }
 
-    
+
     }
 }
