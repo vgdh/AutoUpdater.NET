@@ -37,6 +37,7 @@ namespace AutoUpdaterWPFedition
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //TODO после ошибки загрузки файла и закрытия всех окон приложения, приложение продолжает работать хотя все окна закрыты. Исправить не смог.
             _webClient = new WebClient();
             var uri = new Uri(_downloadURL);
             string fileName = GetFileName(_downloadURL);
