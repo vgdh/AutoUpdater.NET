@@ -163,9 +163,16 @@ namespace AutoUpdaterWPFedition
 
             if (Settings.Message != MessageURL)
             {
-                var thread = new Thread(ShowMessageWindow);
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
+                if (MessageURL == string.Empty)
+                {
+                    Settings.Message = string.Empty;
+                }
+                else
+                {
+                    var thread = new Thread(ShowMessageWindow);
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
+                }
             }
         }
 
